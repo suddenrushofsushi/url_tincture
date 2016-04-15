@@ -1,4 +1,4 @@
-# UrlTincture
+# UrlTincture [![Build Status](https://travis-ci.org/craigwaterman/url_tincture.svg?branch=master)](https://travis-ci.org/craigwaterman/url_tincture)
 
 Sanity checks and canonicalization for HTTP(S) URLs.
 
