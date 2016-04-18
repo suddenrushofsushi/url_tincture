@@ -4,35 +4,114 @@ defmodule UrlTinctureTest do
 
   test "correctly identifies http urls" do
     http_urls = [
-      { true,  0, "http://disney.com" },
-      { true,  1, "https://www.github.com" },
-      { true,  2, "https://github.com/craigwaterman/url_tincture" },
-      { true,  3, "https://github.com/craigwaterman/skeevy/commit/023364df1bef1cdc6240ddc99cf24a9f023f1e2a" },
-      { true,  4, "https://github.com/craigwaterman/skeevy/pulls?q=is%3Apr+is%3Aclosed" },
-      { true,  5, "https://en.wikipedia.org/w/index.php?search=elixir+language&title=Special:Search&go=Go&searchToken=92ehklrxpqe5tzr5nocejtqqn" },
-      { true,  6, "https://en.wikipedia.org/wiki/Elixir_(programming_language)" },
-      { true,  7, "https://en.wikipedia.org/wiki/Elixir_(programming_language)#cite_note-elixirhome-5" },
-      { true,  8, "http://www.bignewsabout.com/asbestos cancer law lawsuit mesothelioma settlement.php" },
-      { true,  9, "http://wwv.i-have-no-idea-howto-internet.com:8567/MyBestFrontpageWebsite.htm" },
-      { true, 10, "http://ko.wikipedia.org/wiki/%EC%9C%84%ED%82%A4%EB%B0%B1%EA%B3%BC%3a%EB%8C%80%EB%AC%B8" }
+      {true,  0, "http://disney.com"},
+      {true,  1, "https://www.github.com"},
+      {true,  2, "https://github.com/craigwaterman/url_tincture"},
+      {true,  3, "https://github.com/craigwaterman/skeevy/commit/023364df1bef1cdc6240ddc99cf24a9f023f1e2a"},
+      {true,  4, "https://github.com/craigwaterman/skeevy/pulls?q=is%3Apr+is%3Aclosed"},
+      {true,  5, "https://en.wikipedia.org/w/index.php?search=elixir+language&title=Special:Search&go=Go&searchToken=92ehklrxpqe5tzr5nocejtqqn"},
+      {true,  6, "https://en.wikipedia.org/wiki/Elixir_(programming_language)"},
+      {true,  7, "https://en.wikipedia.org/wiki/Elixir_(programming_language)#cite_note-elixirhome-5"},
+      {true,  8, "http://www.bignewsabout.com/asbestos cancer law lawsuit mesothelioma settlement.php"},
+      {true,  9, "http://wwv.i-have-no-idea-howto-internet.com:8567/MyBestFrontpageWebsite.htm"},
+      {true, 10, "http://ko.wikipedia.org/wiki/%EC%9C%84%ED%82%A4%EB%B0%B1%EA%B3%BC%3a%EB%8C%80%EB%AC%B8"}
     ]
-    test_urls(http_urls)
+    http_check(http_urls, &UrlTincture.http_url?/1)
   end
 
   test "correctly identifies non-http urls" do
     non_http_urls = [
-      { false, 0, "httpc://forgot_how_to_internet.com/oh-dear.html" },
-      { false, 1, "www.cnn.com" },
-      { false, 2, "ftp://www.example.com" },
-      { false, 3, "ftp://thisisnotaurl" },
-      { false, 4, "bbq://also_not_a_url" }
+      {false, 0, "httpc://forgot_how_to_internet.com/oh-dear.html"},
+      {false, 1, "www.cnn.com"},
+      {false, 2, "ftp://www.example.com"},
+      {false, 3, "ftp://thisisnotaurl"},
+      {false, 4, "bbq://also_not_a_url"}
     ]
-    test_urls(non_http_urls)
+    http_check(non_http_urls, &UrlTincture.http_url?/1)
   end
 
-  def test_urls(urls) do
-    for {expected, ordinal, url} <- urls do
-      assert("#{UrlTincture.is_http_url?(url)}/#{ordinal}" == "#{expected}/#{ordinal}")
+  test "idenfities httpish urls" do
+    assert UrlTincture.httpish?("http://github.com")
+    assert UrlTincture.httpish?("https://github.com")
+  end
+
+  test "identifies non-httpish urls" do
+    refute UrlTincture.httpish?("github.com")
+    refute UrlTincture.httpish?("htt://github.com")
+    refute UrlTincture.httpish?("ftp://place.com")
+  end
+
+  test "forces http protocol" do
+    assert(UrlTincture.force_http("github.com") == "http://github.com")
+    assert(UrlTincture.force_http("https://github.com") == "https://github.com")
+  end
+
+  test "canonicalizes with expected i/o (forcing http)" do
+    canon_urls = [
+      {"http://example.com",   1, "http://www.example.com"},
+      {"http://example.com",   2, " example.com "},
+      {"http://example.com",   3, "example.COM"},
+      {"https://example.com",  4, "https://example.com"},
+      {"https://example.com/", 5, "https://www.example.com:443/"},
+      {"https://cryptocloud.ca:8082/search/get%20real%27/", 6, "https://cryptocloud.ca:8082/search/get%20real%27/"},
+      {"https://cryptocloud.ca:8082/search/get%20real%27/", 7, "https://www.cryptocloud.ca:8082/search/get%20real%27/"},
+      {"http://hbp-maste-appelast-q1brmrc61zc9-2006824672.us-east-1.elb.amazonaws.com/2011/07/why-spotify-will-kill-itunes", 8,
+       "http://hbp-maste-appelast-q1brmrc61zc9-2006824672.us-east-1.elb.amazonaws.com/2011/07/why-spotify-will-kill-itunes"},
+      {"http://yellowbirdsdonthavewingsbuttheyflytomakeyouexperiencea3dreality.com/news/2015/04/jan-boelo-360o-live-in-vr/", 9,
+       "http://www.yellowbirdsdonthavewingsbuttheyflytomakeyouexperiencea3dreality.com/news/2015/04/jan-boelo-360o-live-in-vr/"},
+      {"http://kastles.tumblr.com//", 10, "http://kastles.tumblr.com//"},
+      {"http://linhumphrey.com/", 11, "http://linhumphrey.com/#!"},
+      {"http://universotokyo.com/2015/04/24/earth-day-tokyo-street-style-%e3%80%8c%e3%82%a2%e3%83%bc%e3%82%b9%e3%83%87%e3%82%a4%e6%9d%b1%e4%ba%ac-%e3%83%95%e3%82%a1%e3%83%83%e3%82%b7%e3%83%a7%e3%83%b3%e3%82%b9%e3%83%8a%e3%83%83%e3%83%97/", 12,
+       "http://universotokyo.com/2015/04/24/earth-day-tokyo-street-style-%e3%80%8c%e3%82%a2%e3%83%bc%e3%82%b9%e3%83%87%e3%82%a4%e6%9d%b1%e4%ba%ac-%e3%83%95%e3%82%a1%e3%83%83%e3%82%b7%e3%83%a7%e3%83%b3%e3%82%b9%e3%83%8a%e3%83%83%e3%83%97/"}, 
+      {"http://finance.savesmart.com/savesmartas.103/search/web?ss=t&cid=132007436&ad.segment=savesmartas.103&ad.device=c&aid=0dab4f22-0f7c-4720-b7e3-932d947d0a2d&ridx=66&q=free%20credit%20report%20score&fpid=2&qlnk=true&insp=%3fpvaid%3d45d25b5c8ad14c7888ef6f", 13,
+       "http://finance.savesmart.com/savesmartas.103/search/web?ss=t&cid=132007436&ad.segment=savesmartas.103&ad.device=c&aid=0dab4f22-0f7c-4720-b7e3-932d947d0a2d&ridx=66&q=Free%20Credit%20Report%20Score&fpid=2&qlnk=True&insp=%3Fpvaid%3D45d25b5c8ad14c7888ef6f#top"},
+    ]
+    for {expected, ordinal, url} <- canon_urls do
+      {:ok, result, _hash, _original} = UrlTincture.canonicalize_url(url)
+      assert("#{expected}|#{ordinal}" == "#{result}|#{ordinal}")
     end
   end
+
+  test "canonicalized with expected i/o (not forcing http)" do
+    error = {:error, "invalid url"}
+    canon_urls = [
+      {error, 1, " example.com "},
+      {error, 2, "example.COM"},
+      {error, 3, "example.com/example-path/"},
+    ]
+    for {expected, ordinal, url} <- canon_urls do
+      result = UrlTincture.canonicalize_url(url, [force_http: false])
+      assert("#{inspect(expected)}|#{ordinal}" == "#{inspect(result)}|#{ordinal}")
+    end
+  end
+
+  test "normalizes http port and scheme" do
+    http_normals = [
+      { {"http", ""},       1, "http",  80 },
+      { {"https", ""},      2, "http",  443},
+      { {"https", ""},      3, "https", 443},
+      { {"https", ":80"},   4, "https", 80},
+      { {"http", ":8080"},  5, "http" , 8080},
+      { {"http", ":9999"},  6, "http" , 9999},
+      { {"https", ":9999"}, 7, "https" , 9999},
+      { {"unknown", ":77"}, 8, "unknown" , 77},
+    ]
+    for {expected, ordinal, scheme, port} <- http_normals do
+      assert("#{inspect expected}|#{ordinal}" == "#{inspect UrlTincture.normalized_http(scheme, port)}|#{ordinal}")
+    end
+  end
+
+  test "removes www" do
+    regular  = "http://www.example.com"
+    queried  = "http://www.example.com/?url=http://www.example.com"
+    assert(UrlTincture.remove_www(regular) == "http://example.com")
+    assert(UrlTincture.remove_www(queried) == "http://example.com/?url=http://www.example.com")
+  end
+
+  def http_check(urls, func) do
+    for {expected, ordinal, url} <- urls do
+      assert("#{expected}|#{ordinal}" == "#{func.(url)}|#{ordinal}")
+    end
+  end
+
 end
