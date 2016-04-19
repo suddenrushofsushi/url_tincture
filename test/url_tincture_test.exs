@@ -67,8 +67,8 @@ defmodule UrlTinctureTest do
        "http://finance.savesmart.com/savesmartas.103/search/web?ss=t&cid=132007436&ad.segment=savesmartas.103&ad.device=c&aid=0dab4f22-0f7c-4720-b7e3-932d947d0a2d&ridx=66&q=Free%20Credit%20Report%20Score&fpid=2&qlnk=True&insp=%3Fpvaid%3D45d25b5c8ad14c7888ef6f#top"},
     ]
     for {expected, ordinal, url} <- canon_urls do
-      {:ok, result, _hash, _original} = UrlTincture.canonicalize_url(url)
-      assert("#{expected}|#{ordinal}" == "#{result}|#{ordinal}")
+      result = UrlTincture.canonicalize_url(url)
+      assert("#{expected}|#{ordinal}" == "#{result.canonical}|#{ordinal}")
     end
   end
 

@@ -6,6 +6,10 @@ defmodule UrlTincture do
   The primary methods provided are `canonicalize_url/1` & `canonicalize_url/2`
   """
 
+  defmodule Info do
+    defstruct canonical: "", hash: "", original: ""
+  end
+
   @doc """
   Validate whether a string is an HTTP(S) url.
 
@@ -87,7 +91,7 @@ defmodule UrlTincture do
       normalized_host = parsed.host |> String.strip
       normalized_url = scheme <> "://" <> normalized_host <> port <> (parsed.path || "") <> query
       hash = :crypto.hash(:sha256, normalized_url) |> Base.encode16
-      {:ok, normalized_url, hash, url}
+      %UrlTincture.Info{canonical: normalized_url, hash: hash, original: url}
     else
       {:error, "invalid url"}
     end
@@ -152,4 +156,5 @@ defmodule UrlTincture do
       true -> "http://" <> url
     end
   end
+
 end
