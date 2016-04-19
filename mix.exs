@@ -3,7 +3,9 @@ defmodule UrlTincture.Mixfile do
 
   def project do
     [app: :url_tincture,
-     version: "0.0.1",
+     description: description,
+     package: package,
+     version: "0.0.2",
      elixir: "~> 1.2",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
@@ -17,19 +19,25 @@ defmodule UrlTincture.Mixfile do
     [applications: [:logger]]
   end
 
-  # Dependencies can be Hex packages:
-  #
-  #   {:mydep, "~> 0.3.0"}
-  #
-  # Or git/path repositories:
-  #
-  #   {:mydep, git: "https://github.com/elixir-lang/mydep.git", tag: "0.1.0"}
-  #
-  # Type "mix help deps" for more examples and options
   defp deps do
    [
      {:earmark, "~> 0.2", only: :dev},
      {:ex_doc, "~> 0.11", only: :dev}
   ]
   end
+
+  defp description do
+    """
+    A package to reduce extended forms of URLs to a canonical reference
+    """
+  end
+
+  defp package do
+    [files: ["lib", "priv", "mix.exs", "README*", "readme*", "LICENSE*", "license*"],
+     maintainers: ["Craig Waterman"],
+     licenses: ["MIT"],
+     links: %{"GitHub" => "https://github.com/craigwaterman/url_tincture"}
+    ]
+  end
+
 end
