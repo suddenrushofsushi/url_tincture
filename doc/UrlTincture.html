@@ -1,0 +1,390 @@
+    <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ExDoc v0.11.4">
+    <title>UrlTincture – url_tincture v0.0.3</title>
+    <link rel="stylesheet" href="dist/app-1e374caa3d.css" />
+    <script src="dist/sidebar_items.js"></script>
+  </head>
+  <body data-type="modules">
+
+    <div class="main">
+<button class="sidebar-toggle">
+  <i class="icon-menu"></i>
+</button>
+<section class="sidebar">
+  <button class="sidebar-toggle">
+    <i class="icon-menu"></i>
+  </button>
+
+  
+  <a href="api-reference.html" class="sidebar-projectLink">
+    <div class="sidebar-projectDetails">
+      <h1 class="sidebar-projectName">
+        url_tincture
+      </h1>
+      <h2 class="sidebar-projectVersion">
+        v0.0.3
+      </h2>
+    </div>
+    
+  </a>
+
+  <div class="sidebar-search">
+    <i class="icon-search"></i>
+    <input type="text" class="sidebar-searchInput" placeholder="search" autocomplete="off" />
+  </div>
+
+  <ul class="sidebar-listNav">
+    <li><a id="extras-list" href="#full-list">Pages</a></li>
+
+    
+      <li><a id="modules-list" href="#full-list">Modules</a></li>
+    
+
+    
+
+    
+  </ul>
+
+  <ul id="full-list" class="sidebar-fullList"></ul>
+  <div class="sidebar-noResults"></div>
+</section>
+
+<section class="content">
+  <div id="content" class="content-inner">
+
+
+      <h1>
+        <small class="visible-xs">url_tincture v0.0.3</small>
+        UrlTincture
+        
+        
+      </h1>
+
+      
+        <section id="moduledoc" class="docstring">
+          <p>The base module of UrlTincture.
+This module canonicalizes HTTP(S) urls.</p>
+<p>The primary methods provided are <a href="#canonicalize_url/1"><code class="inline">canonicalize_url/1</code></a> &amp; <a href="#canonicalize_url/2"><code class="inline">canonicalize_url/2</code></a></p>
+
+        </section>
+      
+
+      
+        <section id="summary" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#summary">
+              <i class="icon-link"></i>
+            </a>
+            Summary
+          </h1>
+          
+
+          
+  <div class="summary-functions summary">
+    <h2>
+      <a href="#functions">Functions</a>
+    </h2>
+    <div class="summary-row">
+  <div class="summary-signature">
+    <a href="#canonicalize_url/1">canonicalize_url(url)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Canonicalize a url, forcing scheme to be prepended when missing</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#canonicalize_url/2">canonicalize_url(url, opts)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Canonicalize a url, scheme not prepended when missing by default</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#force_http/1">force_http(url)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Prepend http:// to urls as needed</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#http_url?/1">http_url?(url)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Validate whether a string is an HTTP(S) url</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#httpish?/1">httpish?(url)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Detects if URLs are HTTP or HTTPS</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#normalized_http/2">normalized_http(other, port)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Normalizes http scheme/port combinations</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#remove_www/1">remove_www(url)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Removes the first www. from URLs</p>
+</div>
+  
+</div>
+
+  </div>
+
+
+          
+
+          
+
+        </section>
+      
+
+      
+
+      
+        <section id="functions" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#functions">
+              <i class="icon-link"></i>
+            </a>
+            Functions
+          </h1>
+          <div class="detail" id="canonicalize_url/1">
+  <div class="detail-header">
+    <a href="#canonicalize_url/1" class="detail-link" title="Link to this function">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">canonicalize_url(url)</span>
+      
+  </div>
+  
+  <section class="docstring">
+    <p>Canonicalize a url, forcing scheme to be prepended when missing.</p>
+<p>URLs are:</p>
+<ul>
+<li>Validated.
+</li>
+<li>Downcased.
+</li>
+<li>Stripped of www.
+</li>
+<li>Stripped of fragments.
+</li>
+<li>http(s) / 80(443) ports are normalized.
+</li>
+</ul>
+<h2>Parameters</h2>
+<ul>
+<li><code class="inline">url</code>: The URL to canonicalize
+</li>
+</ul>
+<h2>Returns:</h2>
+<ul>
+<li><code class="inline">%UrlTincture.Info{}</code> on success
+</li>
+<li><code class="inline">{:error, &quot;error message&quot;}</code> on failure
+</li>
+</ul>
+
+  </section>
+</div>
+<div class="detail" id="canonicalize_url/2">
+  <div class="detail-header">
+    <a href="#canonicalize_url/2" class="detail-link" title="Link to this function">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">canonicalize_url(url, opts)</span>
+      
+  </div>
+  
+  <section class="docstring">
+    <p>Canonicalize a url, scheme not prepended when missing by default.</p>
+<p>See <a href="UrlTincture.html#canonicalize_url/1"><code class="inline">UrlTincture.canonicalize_url/1</code></a> for details.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code class="inline">url</code>: The URL to canonicalize
+</li>
+<li><code class="inline">opts</code>: Options to pass to the canonicalizer (currently only <code class="inline">force_http</code> is supported)
+</li>
+</ul>
+<h2>TODO</h2>
+<p>Replace the hardcoded crypto call with an atom</p>
+
+  </section>
+</div>
+<div class="detail" id="force_http/1">
+  <div class="detail-header">
+    <a href="#force_http/1" class="detail-link" title="Link to this function">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">force_http(url)</span>
+      
+  </div>
+  
+  <section class="docstring">
+    <p>Prepend http:// to urls as needed.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code class="inline">url</code> - The URL to process
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code class="inline">String</code> containing the processed URL
+</li>
+</ul>
+
+  </section>
+</div>
+<div class="detail" id="http_url?/1">
+  <div class="detail-header">
+    <a href="#http_url?/1" class="detail-link" title="Link to this function">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">http_url?(url)</span>
+      
+  </div>
+  
+  <section class="docstring">
+    <p>Validate whether a string is an HTTP(S) url.</p>
+<p>Adapted from <a href="https://github.com/johnotander/is_url">github/jonotander/is_url</a>
+which in turn was adapted from <a href="http://stackoverflow.com/questions/30696761/check-if-a-url-is-valid-in-elixir">Stack Overflow</a>.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code class="inline">url</code>: The URL to validate
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code class="inline">boolean</code>
+</li>
+</ul>
+
+  </section>
+</div>
+<div class="detail" id="httpish?/1">
+  <div class="detail-header">
+    <a href="#httpish?/1" class="detail-link" title="Link to this function">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">httpish?(url)</span>
+      
+  </div>
+  
+  <section class="docstring">
+    <p>Detects if URLs are HTTP or HTTPS</p>
+<h2>Parameters</h2>
+<ul>
+<li><code class="inline">url</code> - The URL to analyze
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code class="inline">boolean</code>
+</li>
+</ul>
+
+  </section>
+</div>
+<div class="detail" id="normalized_http/2">
+  <div class="detail-header">
+    <a href="#normalized_http/2" class="detail-link" title="Link to this function">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">normalized_http(other, port)</span>
+      
+  </div>
+  
+  <section class="docstring">
+    <p>Normalizes http scheme/port combinations.</p>
+<p>Passes through any unrecognized combinations.</p>
+<h3>Parameters</h3>
+<ul>
+<li><code class="inline">scheme</code> - A string representing the URI parsed scheme
+</li>
+<li><code class="inline">port</code>   - An integer representing the URI parsed port
+</li>
+</ul>
+<h2>Returns <code class="inline">{scheme, port}</code></h2>
+<ul>
+<li><code class="inline">(String) port</code> in the format “:num”
+</li>
+</ul>
+
+  </section>
+</div>
+<div class="detail" id="remove_www/1">
+  <div class="detail-header">
+    <a href="#remove_www/1" class="detail-link" title="Link to this function">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">remove_www(url)</span>
+      
+  </div>
+  
+  <section class="docstring">
+    <p>Removes the first www. from URLs</p>
+<h2>Parameters</h2>
+<ul>
+<li><code class="inline">url</code> - The URL to process
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code class="inline">String</code> containing the processed URL
+</li>
+</ul>
+
+  </section>
+</div>
+
+        </section>
+      
+
+      
+
+      
+        <footer class="footer">
+      <p>
+        <span class="line">
+          Built using
+          <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" rel="help" target="_blank">ExDoc</a> (v0.11.4),
+        </span>
+        <span class="line">
+          designed by
+          <a href="https://twitter.com/dignifiedquire" target="_blank" title="@dignifiedquire">Friedel Ziegelmayer</a>.
+          </span>
+      </p>
+      <button class="night-mode-toggle" />
+    </footer>
+  </div>
+</section>
+</div>
+  <script src="dist/app-6d2e071366.js"></script>
+  </body>
+</html>
+

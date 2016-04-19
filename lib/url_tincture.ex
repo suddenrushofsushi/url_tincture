@@ -7,6 +7,18 @@ defmodule UrlTincture do
   """
 
   defmodule Info do
+    @moduledoc """
+    A simple struct for returning canonicalization results.
+
+    ## Contains:
+    * `canonical`: The canonicalized URL
+    * `hash`: A SHA-256 hash of the above
+    * `original`: Returns the original URL
+
+    ## Poison
+    This struct derives `Poison.Encoder` from [poison](https://github.com/devinus/poison) for easy encoding
+    """
+    @derive [Poison.Encoder]
     defstruct canonical: "", hash: "", original: ""
   end
 
@@ -49,7 +61,7 @@ defmodule UrlTincture do
     - `url`: The URL to canonicalize
 
   ## Returns:
-    * `{:ok, "canonical_url", ":sha256 hash", "original_url"}` on success
+    * `%UrlTincture.Info{}` on success
     * `{:error, "error message"}` on failure
 
   """
