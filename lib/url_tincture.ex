@@ -89,7 +89,8 @@ defmodule UrlTincture do
         _ -> "?" <> parsed.query
       end
       normalized_host = parsed.host |> String.strip
-      normalized_url = scheme <> "://" <> normalized_host <> port <> (parsed.path || "") <> query
+      normalized_path = (parsed.path || "") |> String.replace_trailing("/", "")
+      normalized_url = scheme <> "://" <> normalized_host <> port <> normalized_path <> query
       hash = :crypto.hash(:sha256, normalized_url) |> Base.encode16
       %UrlTincture.Info{canonical: normalized_url, hash: hash, original: url}
     else
