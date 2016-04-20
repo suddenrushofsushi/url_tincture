@@ -5,7 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.11.4">
-    <title>UrlTincture – url_tincture v0.0.3</title>
+    <title>UrlTincture – url_tincture v0.0.4</title>
     <link rel="stylesheet" href="dist/app-1e374caa3d.css" />
     <script src="dist/sidebar_items.js"></script>
   </head>
@@ -27,7 +27,7 @@
         url_tincture
       </h1>
       <h2 class="sidebar-projectVersion">
-        v0.0.3
+        v0.0.4
       </h2>
     </div>
     
@@ -59,7 +59,7 @@
 
 
       <h1>
-        <small class="visible-xs">url_tincture v0.0.3</small>
+        <small class="visible-xs">url_tincture v0.0.4</small>
         UrlTincture
         
         
@@ -118,15 +118,6 @@ This module canonicalizes HTTP(S) urls.</p>
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#http_url?/1">http_url?(url)</a>
-  </div>
-  
-    <div class="summary-synopsis"><p>Validate whether a string is an HTTP(S) url</p>
-</div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature">
     <a href="#httpish?/1">httpish?(url)</a>
   </div>
   
@@ -149,6 +140,15 @@ This module canonicalizes HTTP(S) urls.</p>
   </div>
   
     <div class="summary-synopsis"><p>Removes the first www. from URLs</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#safe_parse/1">safe_parse(url)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Safely parses passed in URLs</p>
 </div>
   
 </div>
@@ -260,32 +260,6 @@ This module canonicalizes HTTP(S) urls.</p>
 
   </section>
 </div>
-<div class="detail" id="http_url?/1">
-  <div class="detail-header">
-    <a href="#http_url?/1" class="detail-link" title="Link to this function">
-      <i class="icon-link"></i>
-    </a>
-    <span class="signature">http_url?(url)</span>
-      
-  </div>
-  
-  <section class="docstring">
-    <p>Validate whether a string is an HTTP(S) url.</p>
-<p>Adapted from <a href="https://github.com/johnotander/is_url">github/jonotander/is_url</a>
-which in turn was adapted from <a href="http://stackoverflow.com/questions/30696761/check-if-a-url-is-valid-in-elixir">Stack Overflow</a>.</p>
-<h2>Parameters</h2>
-<ul>
-<li><code class="inline">url</code>: The URL to validate
-</li>
-</ul>
-<h2>Returns</h2>
-<ul>
-<li><code class="inline">boolean</code>
-</li>
-</ul>
-
-  </section>
-</div>
 <div class="detail" id="httpish?/1">
   <div class="detail-header">
     <a href="#httpish?/1" class="detail-link" title="Link to this function">
@@ -356,6 +330,33 @@ which in turn was adapted from <a href="http://stackoverflow.com/questions/30696
 <h2>Returns</h2>
 <ul>
 <li><code class="inline">String</code> containing the processed URL
+</li>
+</ul>
+
+  </section>
+</div>
+<div class="detail" id="safe_parse/1">
+  <div class="detail-header">
+    <a href="#safe_parse/1" class="detail-link" title="Link to this function">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">safe_parse(url)</span>
+      
+  </div>
+  
+  <section class="docstring">
+    <p>Safely parses passed in URLs</p>
+<h2>Parameters</h2>
+<ul>
+<li><code class="inline">url</code>: The URL to parse
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code class="inline">{:ok, %URI}</code> on success
+</li>
+<li>`{:error, “invalid url”} on failure
+
 </li>
 </ul>
 
