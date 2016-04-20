@@ -4,30 +4,30 @@ defmodule UrlTinctureTest do
 
   test "correctly identifies http urls" do
     http_urls = [
-      {true,  0, "http://disney.com"},
-      {true,  1, "https://www.github.com"},
-      {true,  2, "https://github.com/craigwaterman/url_tincture"},
-      {true,  3, "https://github.com/craigwaterman/skeevy/commit/023364df1bef1cdc6240ddc99cf24a9f023f1e2a"},
-      {true,  4, "https://github.com/craigwaterman/skeevy/pulls?q=is%3Apr+is%3Aclosed"},
-      {true,  5, "https://en.wikipedia.org/w/index.php?search=elixir+language&title=Special:Search&go=Go&searchToken=92ehklrxpqe5tzr5nocejtqqn"},
-      {true,  6, "https://en.wikipedia.org/wiki/Elixir_(programming_language)"},
-      {true,  7, "https://en.wikipedia.org/wiki/Elixir_(programming_language)#cite_note-elixirhome-5"},
-      {true,  8, "http://www.bignewsabout.com/asbestos cancer law lawsuit mesothelioma settlement.php"},
-      {true,  9, "http://wwv.i-have-no-idea-howto-internet.com:8567/MyBestFrontpageWebsite.htm"},
-      {true, 10, "http://ko.wikipedia.org/wiki/%EC%9C%84%ED%82%A4%EB%B0%B1%EA%B3%BC%3a%EB%8C%80%EB%AC%B8"}
+      {:ok,  0, "http://disney.com"},
+      {:ok,  1, "https://www.github.com"},
+      {:ok,  2, "https://github.com/craigwaterman/url_tincture"},
+      {:ok,  3, "https://github.com/craigwaterman/skeevy/commit/023364df1bef1cdc6240ddc99cf24a9f023f1e2a"},
+      {:ok,  4, "https://github.com/craigwaterman/skeevy/pulls?q=is%3Apr+is%3Aclosed"},
+      {:ok,  5, "https://en.wikipedia.org/w/index.php?search=elixir+language&title=Special:Search&go=Go&searchToken=92ehklrxpqe5tzr5nocejtqqn"},
+      {:ok,  6, "https://en.wikipedia.org/wiki/Elixir_(programming_language)"},
+      {:ok,  7, "https://en.wikipedia.org/wiki/Elixir_(programming_language)#cite_note-elixirhome-5"},
+      {:ok,  8, "http://www.bignewsabout.com/asbestos cancer law lawsuit mesothelioma settlement.php"},
+      {:ok,  9, "http://wwv.i-have-no-idea-howto-internet.com:8567/MyBestFrontpageWebsite.htm"},
+      {:ok, 10, "http://ko.wikipedia.org/wiki/%EC%9C%84%ED%82%A4%EB%B0%B1%EA%B3%BC%3a%EB%8C%80%EB%AC%B8"}
     ]
-    http_check(http_urls, &UrlTincture.http_url?/1)
+    http_check(http_urls, &UrlTincture.safe_parse/1)
   end
 
   test "correctly identifies non-http urls" do
     non_http_urls = [
-      {false, 0, "httpc://forgot_how_to_internet.com/oh-dear.html"},
-      {false, 1, "www.cnn.com"},
-      {false, 2, "ftp://www.example.com"},
-      {false, 3, "ftp://thisisnotaurl"},
-      {false, 4, "bbq://also_not_a_url"}
+      {:error, 0, "httpc://forgot_how_to_internet.com/oh-dear.html"},
+      {:error, 1, "www.cnn.com"},
+      {:error, 2, "ftp://www.example.com"},
+      {:error, 3, "ftp://thisisnotaurl"},
+      {:error, 4, "bbq://also_not_a_url"}
     ]
-    http_check(non_http_urls, &UrlTincture.http_url?/1)
+    http_check(non_http_urls, &UrlTincture.safe_parse/1)
   end
 
   test "idenfities httpish urls" do
@@ -78,6 +78,11 @@ defmodule UrlTinctureTest do
       {error, 1, " example.com "},
       {error, 2, "example.COM"},
       {error, 3, "example.com/example-path/"},
+      {error, 4, "http://://www.eaglebendchiropractic.com"},
+      {error, 5, "http://www./fire/links.htm"},
+      {error, 6, "http://www./links.html"},
+      {error, 7, "http:////www.baychiropracticcenter.com/"},
+      {error, 8, "http://www./"},
     ]
     for {expected, ordinal, url} <- canon_urls do
       result = UrlTincture.canonicalize_url(url, [force_http: false])
@@ -110,7 +115,8 @@ defmodule UrlTinctureTest do
 
   def http_check(urls, func) do
     for {expected, ordinal, url} <- urls do
-      assert("#{expected}|#{ordinal}" == "#{func.(url)}|#{ordinal}")
+      result = Tuple.to_list(func.(url)) |> Enum.at(0)
+      assert("#{expected}|#{ordinal}" == "#{result}|#{ordinal}")
     end
   end
 

@@ -6,6 +6,8 @@ defmodule UrlTincture do
   The primary methods provided are `canonicalize_url/1` & `canonicalize_url/2`
   """
 
+  @error {:error, "invalid url"}
+
   defmodule Info do
     @moduledoc """
     A simple struct for returning canonicalization results.
@@ -23,27 +25,26 @@ defmodule UrlTincture do
   end
 
   @doc """
-  Validate whether a string is an HTTP(S) url.
-
-  Adapted from [github/jonotander/is_url](https://github.com/johnotander/is_url)
-  which in turn was adapted from [Stack Overflow](http://stackoverflow.com/questions/30696761/check-if-a-url-is-valid-in-elixir).
+  Safely parses passed in URLs
 
   ## Parameters
-    - `url`: The URL to validate
+    - `url`: The URL to parse
 
   ## Returns
-  * `boolean`
+  * `{:ok, %URI}` on success
+  * `{:error, "invalid url"} on failure
 
   """
-  def http_url?(url) do
+  def safe_parse(url) do
     if String.contains?(url, ".") && httpish?(url) do
-      case URI.parse(url) do
-        %URI{scheme: nil} -> false
-        %URI{host: nil, path: nil} -> false
-        _ -> true
+      parsed = URI.parse(url)
+      case parsed do
+        %URI{scheme: nil} -> @error
+        %URI{host: nil} -> @error
+        _ -> {:ok, parsed}
       end
     else
-      false
+      @error
     end
   end
 
@@ -89,24 +90,24 @@ defmodule UrlTincture do
       true -> url
     end
 
-    if http_url?(parseable) do
-      parsed = parseable
-                |> String.strip
-                |> String.downcase
-                |> remove_www
-                |> URI.parse
-      {scheme, port} = normalized_http(parsed.scheme, parsed.port)
-      query = case parsed.query do
-        nil -> ""
-        _ -> "?" <> parsed.query
-      end
-      normalized_host = parsed.host |> String.strip
-      normalized_path = (parsed.path || "") |> String.replace_trailing("/", "")
-      normalized_url = scheme <> "://" <> normalized_host <> port <> normalized_path <> query
-      hash = :crypto.hash(:sha256, normalized_url) |> Base.encode16
-      %UrlTincture.Info{canonical: normalized_url, hash: hash, original: url}
-    else
-      {:error, "invalid url"}
+    result = parseable
+              |> String.strip
+              |> String.downcase
+              |> remove_www
+              |> safe_parse
+    case result do
+      {:ok, parsed} ->
+        {scheme, port} = normalized_http(parsed.scheme, parsed.port)
+        query = case parsed.query do
+          nil -> ""
+          _ -> "?" <> parsed.query
+        end
+        normalized_host = parsed.host |> String.strip
+        normalized_path = (parsed.path || "") |> String.replace_trailing("/", "")
+        normalized_url = scheme <> "://" <> normalized_host <> port <> normalized_path <> query
+        hash = :crypto.hash(:sha256, normalized_url) |> Base.encode16
+        %UrlTincture.Info{canonical: normalized_url, hash: hash, original: url}
+      {:error, _} -> @error
     end
   end
 
