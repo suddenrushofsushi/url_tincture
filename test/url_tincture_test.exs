@@ -33,6 +33,8 @@ defmodule UrlTinctureTest do
   test "idenfities httpish urls" do
     assert UrlTincture.httpish?("http://github.com")
     assert UrlTincture.httpish?("https://github.com")
+    assert UrlTincture.httpish?("Https://github.com")
+    assert UrlTincture.httpish?("hTTp://github.com")
   end
 
   test "identifies non-httpish urls" do
@@ -62,7 +64,7 @@ defmodule UrlTinctureTest do
       {"http://kastles.tumblr.com", 10, "http://kastles.tumblr.com//"},
       {"http://linhumphrey.com", 11, "http://linhumphrey.com/#!"},
       {"http://universotokyo.com/2015/04/24/earth-day-tokyo-street-style-%e3%80%8c%e3%82%a2%e3%83%bc%e3%82%b9%e3%83%87%e3%82%a4%e6%9d%b1%e4%ba%ac-%e3%83%95%e3%82%a1%e3%83%83%e3%82%b7%e3%83%a7%e3%83%b3%e3%82%b9%e3%83%8a%e3%83%83%e3%83%97", 12,
-       "http://universotokyo.com/2015/04/24/earth-day-tokyo-street-style-%e3%80%8c%e3%82%a2%e3%83%bc%e3%82%b9%e3%83%87%e3%82%a4%e6%9d%b1%e4%ba%ac-%e3%83%95%e3%82%a1%e3%83%83%e3%82%b7%e3%83%a7%e3%83%b3%e3%82%b9%e3%83%8a%e3%83%83%e3%83%97/"}, 
+       "http://universotokyo.com/2015/04/24/earth-day-tokyo-street-style-%e3%80%8c%e3%82%a2%e3%83%bc%e3%82%b9%e3%83%87%e3%82%a4%e6%9d%b1%e4%ba%ac-%e3%83%95%e3%82%a1%e3%83%83%e3%82%b7%e3%83%a7%e3%83%b3%e3%82%b9%e3%83%8a%e3%83%83%e3%83%97/"},
       {"http://finance.savesmart.com/savesmartas.103/search/web?ss=t&cid=132007436&ad.segment=savesmartas.103&ad.device=c&aid=0dab4f22-0f7c-4720-b7e3-932d947d0a2d&ridx=66&q=free%20credit%20report%20score&fpid=2&qlnk=true&insp=%3fpvaid%3d45d25b5c8ad14c7888ef6f", 13,
        "http://finance.savesmart.com/savesmartas.103/search/web?ss=t&cid=132007436&ad.segment=savesmartas.103&ad.device=c&aid=0dab4f22-0f7c-4720-b7e3-932d947d0a2d&ridx=66&q=Free%20Credit%20Report%20Score&fpid=2&qlnk=True&insp=%3Fpvaid%3D45d25b5c8ad14c7888ef6f#top"},
     ]
