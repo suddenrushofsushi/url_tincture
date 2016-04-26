@@ -82,6 +82,7 @@ defmodule UrlTincture do
   ## TODO
   Replace the hardcoded crypto call with an atom
   """
+  def canonicalize_url(nil, opts), do: @error
   def canonicalize_url(url, opts) do
     opts = Keyword.merge([force_http: false], opts)
 

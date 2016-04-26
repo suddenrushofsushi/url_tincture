@@ -83,6 +83,7 @@ defmodule UrlTinctureTest do
       {error, 6, "http://www./links.html"},
       {error, 7, "http:////www.baychiropracticcenter.com/"},
       {error, 8, "http://www./"},
+      {error, 9, nil},
     ]
     for {expected, ordinal, url} <- canon_urls do
       result = UrlTincture.canonicalize_url(url, [force_http: false])

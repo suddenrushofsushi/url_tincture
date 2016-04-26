@@ -1,5 +1,7 @@
 /_build
 /cover
 /deps
+/.idea
+urltincture.iml
 erl_crash.dump
 *.ez
