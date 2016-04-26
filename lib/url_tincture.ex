@@ -36,15 +36,31 @@ defmodule UrlTincture do
 
   """
   def safe_parse(url) do
-    if String.contains?(url, ".") && httpish?(url) do
-      parsed = URI.parse(url)
-      case parsed do
-        %URI{scheme: nil} -> @error
-        %URI{host: nil} -> @error
-        _ -> {:ok, parsed}
-      end
-    else
-      @error
+    case can_parse_safely?(url) do
+      {:ok, url} ->
+        case URI.parse(url) do
+          %URI{scheme: nil} -> @error
+          %URI{host: nil} -> @error
+          parsed -> {:ok, parsed}
+        end
+      {:error, _} -> @error
+    end
+  end
+
+  @doc """
+  Test if passed url can be safely parsed
+
+  ## Parameters
+    - `url`: The URL to parse
+
+  ## Returns
+  * `{:ok, url}` on success
+  * `{:error, "invalid url"}` on failure
+  """
+  def can_parse_safely?(url) do
+    cond do
+      String.contains?(url, ".") && httpish?(url) -> {:ok, url}
+      true -> @error 
     end
   end
 
@@ -140,8 +156,9 @@ defmodule UrlTincture do
   * `boolean`
   """
   def httpish?(url) do
-    String.starts_with?(url, "http://") || String.starts_with?(url, "https://")
+    url =~ ~r/http[s]{0,1}:\/\//
   end
+
 
   @doc """
   Removes the first www. from URLs
@@ -166,7 +183,7 @@ defmodule UrlTincture do
   * `String` containing the processed URL
   """
   def force_http(url) do
-    cond do 
+    cond do
       httpish?(url) -> url
       true -> "http://" <> url
     end
