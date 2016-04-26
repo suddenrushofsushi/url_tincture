@@ -33,8 +33,8 @@ defmodule UrlTinctureTest do
   test "idenfities httpish urls" do
     assert UrlTincture.httpish?("http://github.com")
     assert UrlTincture.httpish?("https://github.com")
-    assert UrlTincture.httpish?("Https://github.com")
-    assert UrlTincture.httpish?("hTTp://github.com")
+    refute UrlTincture.httpish?("Https://github.com")
+    refute UrlTincture.httpish?("hTTp://github.com")
   end
 
   test "identifies non-httpish urls" do
@@ -113,6 +113,17 @@ defmodule UrlTinctureTest do
     queried  = "http://www.example.com/?url=http://www.example.com"
     assert(UrlTincture.remove_www(regular) == "http://example.com")
     assert(UrlTincture.remove_www(queried) == "http://example.com/?url=http://www.example.com")
+  end
+
+  test "can parse url safely" do
+    error = {:error, "invalid url"}
+    assert(UrlTincture.can_parse_safely?("http://") == error)
+    assert(UrlTincture.can_parse_safely?("httpc://www.google.com") == error)
+    assert(UrlTincture.can_parse_safely?("ftp://..") == error)
+    assert(UrlTincture.can_parse_safely?("http://.") == {:ok, "http://."})
+    assert(UrlTincture.can_parse_safely?("https://.") == {:ok, "https://."})
+    assert(UrlTincture.can_parse_safely?("http://google.com") == {:ok, "http://google.com"})
+    assert(UrlTincture.can_parse_safely?("https://google.com") == {:ok, "https://google.com"})
   end
 
   def http_check(urls, func) do

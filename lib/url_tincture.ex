@@ -60,7 +60,7 @@ defmodule UrlTincture do
   def can_parse_safely?(url) do
     cond do
       String.contains?(url, ".") && httpish?(url) -> {:ok, url}
-      true -> {:error, @error}
+      true -> @error 
     end
   end
 
@@ -155,7 +155,7 @@ defmodule UrlTincture do
   * `boolean`
   """
   def httpish?(url) do
-    url =~ ~r/http[s]{0,1}:\/\//i
+    url =~ ~r/http[s]{0,1}:\/\//
   end
 
 
