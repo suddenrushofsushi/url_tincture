@@ -5,7 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.11.4">
-    <title>UrlTincture – url_tincture v0.0.4</title>
+    <title>UrlTincture – url_tincture v0.0.5</title>
     <link rel="stylesheet" href="dist/app-1e374caa3d.css" />
     <script src="dist/sidebar_items.js"></script>
   </head>
@@ -27,7 +27,7 @@
         url_tincture
       </h1>
       <h2 class="sidebar-projectVersion">
-        v0.0.4
+        v0.0.5
       </h2>
     </div>
     
@@ -59,7 +59,7 @@
 
 
       <h1>
-        <small class="visible-xs">url_tincture v0.0.4</small>
+        <small class="visible-xs">url_tincture v0.0.5</small>
         UrlTincture
         
         
@@ -90,6 +90,15 @@ This module canonicalizes HTTP(S) urls.</p>
       <a href="#functions">Functions</a>
     </h2>
     <div class="summary-row">
+  <div class="summary-signature">
+    <a href="#can_parse_safely?/1">can_parse_safely?(url)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Test if passed url can be safely parsed</p>
+</div>
+  
+</div>
+<div class="summary-row">
   <div class="summary-signature">
     <a href="#canonicalize_url/1">canonicalize_url(url)</a>
   </div>
@@ -173,7 +182,33 @@ This module canonicalizes HTTP(S) urls.</p>
             </a>
             Functions
           </h1>
-          <div class="detail" id="canonicalize_url/1">
+          <div class="detail" id="can_parse_safely?/1">
+  <div class="detail-header">
+    <a href="#can_parse_safely?/1" class="detail-link" title="Link to this function">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">can_parse_safely?(url)</span>
+      
+  </div>
+  
+  <section class="docstring">
+    <p>Test if passed url can be safely parsed</p>
+<h2>Parameters</h2>
+<ul>
+<li><code class="inline">url</code>: The URL to parse
+</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code class="inline">{:ok, url}</code> on success
+</li>
+<li><code class="inline">{:error, &quot;invalid url&quot;}</code> on failure
+</li>
+</ul>
+
+  </section>
+</div>
+<div class="detail" id="canonicalize_url/1">
   <div class="detail-header">
     <a href="#canonicalize_url/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
