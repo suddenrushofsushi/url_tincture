@@ -78,7 +78,8 @@ defmodule UrlTinctureTest do
     result = UrlTincture.canonicalize_url("http://example.com/sample-test")
     assert(result == %UrlTincture.Info{canonical: "http://example.com/sample-test",
                      hash: "999E73A9EDA6C7F13C6B0272FE41A85518525478FDA98C1F173CC829D245F1A2",
-                     parent: "F0E6A6A97042A4F1F1C87F5F7D44315B2D852C2DF5C7991CC66241BF7072D1C4",
+                     parent_hash: "F0E6A6A97042A4F1F1C87F5F7D44315B2D852C2DF5C7991CC66241BF7072D1C4",
+                     parent_canonical: "http://example.com",
                      original: "http://example.com/sample-test"})
   end
 
@@ -86,7 +87,8 @@ defmodule UrlTinctureTest do
     result = UrlTincture.canonicalize_url("http://example.com/")
     assert(result == %UrlTincture.Info{canonical: "http://example.com",
                      hash: "F0E6A6A97042A4F1F1C87F5F7D44315B2D852C2DF5C7991CC66241BF7072D1C4",
-                     parent: "F0E6A6A97042A4F1F1C87F5F7D44315B2D852C2DF5C7991CC66241BF7072D1C4",
+                     parent_hash: "F0E6A6A97042A4F1F1C87F5F7D44315B2D852C2DF5C7991CC66241BF7072D1C4",
+                     parent_canonical: "http://example.com",
                      original: "http://example.com/"})
   end
 
