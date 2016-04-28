@@ -5,7 +5,7 @@ defmodule UrlTincture.Mixfile do
     [app: :url_tincture,
      description: description,
      package: package,
-     version: "0.0.5",
+     version: "0.0.6",
      elixir: "~> 1.2",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
