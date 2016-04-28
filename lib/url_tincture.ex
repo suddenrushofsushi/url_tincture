@@ -21,7 +21,7 @@ defmodule UrlTincture do
     This struct derives `Poison.Encoder` from [poison](https://github.com/devinus/poison) for easy encoding
     """
     @derive [Poison.Encoder]
-    defstruct canonical: "", hash: "", original: ""
+    defstruct canonical: "", hash: "", original: "", parent: ""
   end
 
   @doc """
@@ -121,9 +121,12 @@ defmodule UrlTincture do
         end
         normalized_host = parsed.host |> String.strip
         normalized_path = (parsed.path || "") |> String.replace_trailing("/", "")
-        normalized_url = scheme <> "://" <> normalized_host <> port <> normalized_path <> query
-        hash = :crypto.hash(:sha256, normalized_url) |> Base.encode16
-        %UrlTincture.Info{canonical: normalized_url, hash: hash, original: url}
+        normalized_root = scheme <> "://" <> normalized_host <> port
+        normalized_url  = normalized_root <> normalized_path <> query
+        hash_root = :crypto.hash(:sha256, normalized_root) |> Base.encode16
+        hash_url = :crypto.hash(:sha256, normalized_url) |> Base.encode16
+        %UrlTincture.Info{canonical: normalized_url, hash: hash_url,
+                          original: url, parent: hash_root}
       {:error, _} -> @error
     end
   end
