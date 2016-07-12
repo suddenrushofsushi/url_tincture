@@ -37,7 +37,7 @@ defmodule UrlTincture.Mixfile do
     [files: ["lib", "priv", "mix.exs", "README*", "readme*", "LICENSE*", "license*"],
      maintainers: ["Craig Waterman"],
      licenses: ["MIT"],
-     links: %{"GitHub" => "https://github.com/craigwaterman/url_tincture"}
+     links: %{"GitHub" => "https://github.com/suddenrushofsushi/url_tincture"}
     ]
   end
 
