@@ -21,7 +21,8 @@ defmodule UrlTincture do
     This struct derives `Poison.Encoder` from [poison](https://github.com/devinus/poison) for easy encoding
     """
     @derive [Poison.Encoder]
-    defstruct canonical: "", hash: "", original: "", parent_hash: "", parent_canonical: ""
+    defstruct canonical: "", hash: "", original: "", parent_hash: "", parent_canonical: "",
+              root_canonical: "", root_hash: ""
   end
 
   @doc """
@@ -60,7 +61,7 @@ defmodule UrlTincture do
   def can_parse_safely?(url) do
     cond do
       String.contains?(url, ".") && httpish?(url) -> {:ok, url}
-      true -> @error 
+      true -> @error
     end
   end
 
@@ -121,13 +122,16 @@ defmodule UrlTincture do
         end
         normalized_host = parsed.host |> String.strip
         normalized_path = (parsed.path || "") |> String.replace_trailing("/", "")
-        normalized_root = scheme <> "://" <> normalized_host <> port
-        normalized_url  = normalized_root <> normalized_path <> query
-        hash_root = :crypto.hash(:sha256, normalized_root) |> Base.encode16
+        normalized_parent = normalized_host <> port
+        normalized_url  = normalized_parent <> normalized_path <> query
+        normalized_root = extract_root(normalized_parent)
+        hash_parent = :crypto.hash(:sha256, normalized_parent) |> Base.encode16
         hash_url = :crypto.hash(:sha256, normalized_url) |> Base.encode16
+        hash_root = :crypto.hash(:sha256, normalized_root) |> Base.encode16
         %UrlTincture.Info{canonical: normalized_url, hash: hash_url,
-                          original: url, parent_hash: hash_root,
-                          parent_canonical: normalized_root}
+                          original: url, parent_hash: hash_parent,
+                          parent_canonical: normalized_parent,
+                          root_canonical: normalized_root, root_hash: hash_root}
       {:error, _} -> @error
     end
   end
@@ -193,4 +197,12 @@ defmodule UrlTincture do
     end
   end
 
+  def extract_root(url) do
+    host = URI.parse("http://" <> url).host
+    parts = case String.ends_with?(host, ".co.uk") do
+      false -> 2
+      true -> 3
+    end
+    host |> String.split(".") |> Enum.take(parts * -1) |> Enum.join(".")
+  end
 end

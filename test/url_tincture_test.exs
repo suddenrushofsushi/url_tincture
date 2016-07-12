@@ -19,6 +19,15 @@ defmodule UrlTinctureTest do
     http_check(http_urls, &UrlTincture.safe_parse/1)
   end
 
+  test "correctly identifies root domains" do
+    list = [{"someblog.blogspot.com", "blogspot.com"},
+            {"someblog.blogspot.co.uk", "blogspot.co.uk"}]
+    list
+    |> Enum.each(fn {url, expected} ->
+         assert(expected == UrlTincture.canonicalize_url(url).root_canonical)
+       end)
+  end
+
   test "correctly identifies non-http urls" do
     non_http_urls = [
       {:error, 0, "httpc://forgot_how_to_internet.com/oh-dear.html"},
@@ -50,22 +59,22 @@ defmodule UrlTinctureTest do
 
   test "canonicalizes with expected i/o (forcing http)" do
     canon_urls = [
-      {"http://example.com",   1, "http://www.example.com"},
-      {"http://example.com",   2, " example.com /"},
-      {"http://example.com",   3, "example.COM"},
-      {"https://example.com",  4, "https://example.com"},
-      {"https://example.com", 5, "https://www.example.com:443/"},
-      {"https://cryptocloud.ca:8082/search/get%20real%27", 6, "https://cryptocloud.ca:8082/search/get%20real%27/"},
-      {"https://cryptocloud.ca:8082/search/get%20real%27", 7, "https://www.cryptocloud.ca:8082/search/get%20real%27/"},
-      {"http://hbp-maste-appelast-q1brmrc61zc9-2006824672.us-east-1.elb.amazonaws.com/2011/07/why-spotify-will-kill-itunes", 8,
+      {"example.com",   1, "http://www.example.com"},
+      {"example.com",   2, " example.com /"},
+      {"example.com",   3, "example.COM"},
+      {"example.com",  4, "https://example.com"},
+      {"example.com", 5, "https://www.example.com:443/"},
+      {"cryptocloud.ca:8082/search/get%20real%27", 6, "https://cryptocloud.ca:8082/search/get%20real%27/"},
+      {"cryptocloud.ca:8082/search/get%20real%27", 7, "https://www.cryptocloud.ca:8082/search/get%20real%27/"},
+      {"hbp-maste-appelast-q1brmrc61zc9-2006824672.us-east-1.elb.amazonaws.com/2011/07/why-spotify-will-kill-itunes", 8,
        "http://hbp-maste-appelast-q1brmrc61zc9-2006824672.us-east-1.elb.amazonaws.com/2011/07/why-spotify-will-kill-itunes"},
-      {"http://yellowbirdsdonthavewingsbuttheyflytomakeyouexperiencea3dreality.com/news/2015/04/jan-boelo-360o-live-in-vr", 9,
+      {"yellowbirdsdonthavewingsbuttheyflytomakeyouexperiencea3dreality.com/news/2015/04/jan-boelo-360o-live-in-vr", 9,
        "http://www.yellowbirdsdonthavewingsbuttheyflytomakeyouexperiencea3dreality.com/news/2015/04/jan-boelo-360o-live-in-vr/"},
-      {"http://kastles.tumblr.com", 10, "http://kastles.tumblr.com//"},
-      {"http://linhumphrey.com", 11, "http://linhumphrey.com/#!"},
-      {"http://universotokyo.com/2015/04/24/earth-day-tokyo-street-style-%e3%80%8c%e3%82%a2%e3%83%bc%e3%82%b9%e3%83%87%e3%82%a4%e6%9d%b1%e4%ba%ac-%e3%83%95%e3%82%a1%e3%83%83%e3%82%b7%e3%83%a7%e3%83%b3%e3%82%b9%e3%83%8a%e3%83%83%e3%83%97", 12,
+      {"kastles.tumblr.com", 10, "http://kastles.tumblr.com//"},
+      {"linhumphrey.com", 11, "http://linhumphrey.com/#!"},
+      {"universotokyo.com/2015/04/24/earth-day-tokyo-street-style-%e3%80%8c%e3%82%a2%e3%83%bc%e3%82%b9%e3%83%87%e3%82%a4%e6%9d%b1%e4%ba%ac-%e3%83%95%e3%82%a1%e3%83%83%e3%82%b7%e3%83%a7%e3%83%b3%e3%82%b9%e3%83%8a%e3%83%83%e3%83%97", 12,
        "http://universotokyo.com/2015/04/24/earth-day-tokyo-street-style-%e3%80%8c%e3%82%a2%e3%83%bc%e3%82%b9%e3%83%87%e3%82%a4%e6%9d%b1%e4%ba%ac-%e3%83%95%e3%82%a1%e3%83%83%e3%82%b7%e3%83%a7%e3%83%b3%e3%82%b9%e3%83%8a%e3%83%83%e3%83%97/"},
-      {"http://finance.savesmart.com/savesmartas.103/search/web?ss=t&cid=132007436&ad.segment=savesmartas.103&ad.device=c&aid=0dab4f22-0f7c-4720-b7e3-932d947d0a2d&ridx=66&q=free%20credit%20report%20score&fpid=2&qlnk=true&insp=%3fpvaid%3d45d25b5c8ad14c7888ef6f", 13,
+      {"finance.savesmart.com/savesmartas.103/search/web?ss=t&cid=132007436&ad.segment=savesmartas.103&ad.device=c&aid=0dab4f22-0f7c-4720-b7e3-932d947d0a2d&ridx=66&q=free%20credit%20report%20score&fpid=2&qlnk=true&insp=%3fpvaid%3d45d25b5c8ad14c7888ef6f", 13,
        "http://finance.savesmart.com/savesmartas.103/search/web?ss=t&cid=132007436&ad.segment=savesmartas.103&ad.device=c&aid=0dab4f22-0f7c-4720-b7e3-932d947d0a2d&ridx=66&q=Free%20Credit%20Report%20Score&fpid=2&qlnk=True&insp=%3Fpvaid%3D45d25b5c8ad14c7888ef6f#top"},
     ]
     for {expected, ordinal, url} <- canon_urls do
@@ -76,20 +85,22 @@ defmodule UrlTinctureTest do
 
   test "canonicalizes url and provides parent hash (for sub-page)" do
     result = UrlTincture.canonicalize_url("http://example.com/sample-test")
-    assert(result == %UrlTincture.Info{canonical: "http://example.com/sample-test",
-                     hash: "999E73A9EDA6C7F13C6B0272FE41A85518525478FDA98C1F173CC829D245F1A2",
-                     parent_hash: "F0E6A6A97042A4F1F1C87F5F7D44315B2D852C2DF5C7991CC66241BF7072D1C4",
-                     parent_canonical: "http://example.com",
-                     original: "http://example.com/sample-test"})
+    assert(result == %UrlTincture.Info{canonical: "example.com/sample-test",
+      hash: "A7CD379967081D1A7424DA42EC6814F481236613860E68439E7B4227CE0DBA1F",
+      original: "http://example.com/sample-test", parent_canonical: "example.com",
+      parent_hash: "A379A6F6EEAFB9A55E378C118034E2751E682FAB9F2D30AB13D2125586CE1947",
+      root_canonical: "example.com",
+      root_hash: "A379A6F6EEAFB9A55E378C118034E2751E682FAB9F2D30AB13D2125586CE1947"})
   end
 
   test "canonicalizes url and provides parent hash (for root)" do
-    result = UrlTincture.canonicalize_url("http://example.com/")
-    assert(result == %UrlTincture.Info{canonical: "http://example.com",
-                     hash: "F0E6A6A97042A4F1F1C87F5F7D44315B2D852C2DF5C7991CC66241BF7072D1C4",
-                     parent_hash: "F0E6A6A97042A4F1F1C87F5F7D44315B2D852C2DF5C7991CC66241BF7072D1C4",
-                     parent_canonical: "http://example.com",
-                     original: "http://example.com/"})
+    result = UrlTincture.canonicalize_url("http://example.com")
+    assert(result == %UrlTincture.Info{canonical: "example.com",
+      hash: "A379A6F6EEAFB9A55E378C118034E2751E682FAB9F2D30AB13D2125586CE1947",
+      original: "http://example.com", parent_canonical: "example.com",
+      parent_hash: "A379A6F6EEAFB9A55E378C118034E2751E682FAB9F2D30AB13D2125586CE1947",
+      root_canonical: "example.com",
+      root_hash: "A379A6F6EEAFB9A55E378C118034E2751E682FAB9F2D30AB13D2125586CE1947"})
   end
 
   test "canonicalized with expected i/o (not forcing http)" do
