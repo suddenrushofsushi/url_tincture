@@ -9,7 +9,7 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
   1. Add url_tincture to your list of dependencies in `mix.exs`:
 
         def deps do
-          [{:url_tincture, "~> 1.0.0"}]
+          [{:url_tincture, "~> 1.0.1"}]
         end
 
   2. Ensure url_tincture is started before your application:

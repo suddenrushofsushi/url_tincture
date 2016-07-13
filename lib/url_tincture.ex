@@ -22,7 +22,7 @@ defmodule UrlTincture do
     """
     @derive [Poison.Encoder]
     defstruct canonical: "", hash: "", original: "", parent_hash: "", parent_canonical: "",
-              root_canonical: "", root_hash: ""
+              root_canonical: "", root_hash: "", tld: ""
   end
 
   @doc """
@@ -103,9 +103,9 @@ defmodule UrlTincture do
   def canonicalize_url(url, opts) do
     opts = Keyword.merge([force_http: false], opts)
 
-    parseable = cond do
-      opts[:force_http] -> force_http(url)
-      true -> url
+    parseable = case opts[:force_http] do
+      true -> force_http(url)
+      false -> url
     end
 
     result = parseable
@@ -131,7 +131,8 @@ defmodule UrlTincture do
         %UrlTincture.Info{canonical: normalized_url, hash: hash_url,
                           original: url, parent_hash: hash_parent,
                           parent_canonical: normalized_parent,
-                          root_canonical: normalized_root, root_hash: hash_root}
+                          root_canonical: normalized_root, root_hash: hash_root,
+                          tld: extract_tld(normalized_root)}
       {:error, _} -> @error
     end
   end
@@ -197,9 +198,18 @@ defmodule UrlTincture do
     end
   end
 
+  @spec extract_tld(String.t) :: String.t
+  def extract_tld(url) when is_binary(url) do
+    String.split(url, ".") |> Enum.take(-2) |> extract_tld
+  end
+  @spec extract_tld(list()) :: String.t
+  def extract_tld(["co", value]), do: "co." <> value
+  def extract_tld([_value, tld]), do: tld
+
+  @spec extract_root(String.t) :: String.t
   def extract_root(url) do
     host = URI.parse("http://" <> url).host
-    parts = case String.ends_with?(host, ".co.uk") do
+    parts = case String.ends_with?(host, ".co.uk") || String.ends_with?(host, ".co.jp") do
       false -> 2
       true -> 3
     end

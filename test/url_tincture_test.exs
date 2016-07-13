@@ -90,7 +90,8 @@ defmodule UrlTinctureTest do
       original: "http://example.com/sample-test", parent_canonical: "example.com",
       parent_hash: "A379A6F6EEAFB9A55E378C118034E2751E682FAB9F2D30AB13D2125586CE1947",
       root_canonical: "example.com",
-      root_hash: "A379A6F6EEAFB9A55E378C118034E2751E682FAB9F2D30AB13D2125586CE1947"})
+      root_hash: "A379A6F6EEAFB9A55E378C118034E2751E682FAB9F2D30AB13D2125586CE1947",
+      tld: "com"})
   end
 
   test "canonicalizes url and provides parent hash (for root)" do
@@ -100,7 +101,8 @@ defmodule UrlTinctureTest do
       original: "http://example.com", parent_canonical: "example.com",
       parent_hash: "A379A6F6EEAFB9A55E378C118034E2751E682FAB9F2D30AB13D2125586CE1947",
       root_canonical: "example.com",
-      root_hash: "A379A6F6EEAFB9A55E378C118034E2751E682FAB9F2D30AB13D2125586CE1947"})
+      root_hash: "A379A6F6EEAFB9A55E378C118034E2751E682FAB9F2D30AB13D2125586CE1947",
+      tld: "com"})
   end
 
   test "canonicalized with expected i/o (not forcing http)" do
