@@ -128,6 +128,7 @@ defmodule UrlTincture do
         hash_parent = :crypto.hash(:sha256, normalized_parent) |> Base.encode16
         hash_url = :crypto.hash(:sha256, normalized_url) |> Base.encode16
         hash_root = :crypto.hash(:sha256, normalized_root) |> Base.encode16
+        IO.puts(normalized_url)
         %UrlTincture.Info{canonical: normalized_url, hash: hash_url,
                           original: url, parent_hash: hash_parent,
                           parent_canonical: normalized_parent,
@@ -200,7 +201,12 @@ defmodule UrlTincture do
 
   @spec extract_tld(String.t) :: String.t
   def extract_tld(url) when is_binary(url) do
-    String.split(url, ".") |> Enum.take(-2) |> extract_tld
+    list = String.split(url, ".")
+    case length(list) do
+      0 -> nil
+      1 -> nil
+      _ -> list |> Enum.take(-2) |> extract_tld
+    end
   end
   @spec extract_tld(list()) :: String.t
   def extract_tld(["co", value]), do: "co." <> value
