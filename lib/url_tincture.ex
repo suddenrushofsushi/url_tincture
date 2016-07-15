@@ -128,7 +128,6 @@ defmodule UrlTincture do
         hash_parent = :crypto.hash(:sha256, normalized_parent) |> Base.encode16
         hash_url = :crypto.hash(:sha256, normalized_url) |> Base.encode16
         hash_root = :crypto.hash(:sha256, normalized_root) |> Base.encode16
-        IO.puts(normalized_url)
         %UrlTincture.Info{canonical: normalized_url, hash: hash_url,
                           original: url, parent_hash: hash_parent,
                           parent_canonical: normalized_parent,
