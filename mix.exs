@@ -3,13 +3,13 @@ defmodule UrlTincture.Mixfile do
 
   def project do
     [app: :url_tincture,
-     description: description,
-     package: package,
-     version: "1.0.3",
-     elixir: "~> 1.2",
+     description: description(),
+     package: package(),
+     version: "1.0.4",
+     elixir: "~> 1.4",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     deps: deps]
+     deps: deps()]
   end
 
   # Configuration for the OTP application
@@ -21,7 +21,7 @@ defmodule UrlTincture.Mixfile do
 
   defp deps do
    [
-     {:poison, "~> 2.0"},
+     {:poison, ">= 2.0.0"},
      {:earmark, "~> 0.2", only: :dev},
      {:ex_doc, "~> 0.11", only: :dev}
   ]

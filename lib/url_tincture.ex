@@ -22,7 +22,7 @@ defmodule UrlTincture do
     """
     @derive [Poison.Encoder]
     defstruct canonical: "", hash: "", original: "", parent_hash: "", parent_canonical: "",
-              root_canonical: "", root_hash: "", tld: ""
+              root_canonical: "", root_hash: "", tld: "", query: ""
   end
 
   @doc """
@@ -115,7 +115,7 @@ defmodule UrlTincture do
               |> safe_parse
     case result do
       {:ok, parsed} ->
-        {scheme, port} = normalized_http(parsed.scheme, parsed.port)
+        {_scheme, port} = normalized_http(parsed.scheme, parsed.port)
         query = case parsed.query do
           nil -> ""
           _ -> "?" <> parsed.query
@@ -132,7 +132,8 @@ defmodule UrlTincture do
                           original: url, parent_hash: hash_parent,
                           parent_canonical: normalized_parent,
                           root_canonical: normalized_root, root_hash: hash_root,
-                          tld: extract_tld(normalized_root)}
+                          tld: extract_tld(normalized_root),
+                          query: "#{parsed.query}"}
       {:error, _} -> @error
     end
   end
