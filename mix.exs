@@ -34,7 +34,7 @@ defmodule UrlTincture.Mixfile do
   end
 
   defp package do
-    [files: ["lib", "mix.exs", "README*", LICENSE*"],
+    [files: ["lib", "mix.exs", "README*", "LICENSE*"],
      maintainers: ["Craig Waterman"],
      licenses: ["MIT"],
      links: %{"GitHub" => "https://github.com/suddenrushofsushi/url_tincture"}
