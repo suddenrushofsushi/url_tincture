@@ -99,15 +99,14 @@ defmodule UrlTincture do
   ## TODO
   Replace the hardcoded crypto call with an atom
   """
-  def canonicalize_url(nil, opts), do: @error
+  def canonicalize_url(nil, _opts), do: @error
   def canonicalize_url(url, opts) do
-    opts = Keyword.merge([force_http: false, campaign_params: :keep], opts)
+    opts = Keyword.merge([force_http: true, campaign_params: :keep], opts)
 
     parseable = case opts[:force_http] do
       true -> force_http(url)
       false -> url
     end
-
     result = parseable
     |> String.strip
     |> String.downcase
