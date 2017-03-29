@@ -153,12 +153,9 @@ defmodule UrlTincture do
     query
     |> URI.query_decoder
     |> Enum.reduce(%{}, fn {k, v}, acc ->
-      IO.puts("#{k}: #{v}")
       if String.starts_with?(k, "utm_") do
-        IO.puts("skipping #{k}")
         acc
       else
-        IO.puts("keeping #{k}")
         Map.put(acc, k, v)
       end
     end)
