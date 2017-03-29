@@ -131,7 +131,7 @@ defmodule UrlTincture do
                           parent_canonical: normalized_parent,
                           root_canonical: normalized_root, root_hash: hash_root,
                           tld: extract_tld(normalized_root),
-                          query: "#{parsed.query}"}
+                          query: query}
       {:error, _} -> @error
     end
   end
