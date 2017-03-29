@@ -101,7 +101,7 @@ defmodule UrlTincture do
   """
   def canonicalize_url(nil, opts), do: @error
   def canonicalize_url(url, opts) do
-    opts = Keyword.merge([force_http: false], opts)
+    opts = Keyword.merge([force_http: false, campaign_params: :keep], opts)
 
     parseable = case opts[:force_http] do
       true -> force_http(url)
@@ -109,17 +109,15 @@ defmodule UrlTincture do
     end
 
     result = parseable
-              |> String.strip
-              |> String.downcase
-              |> remove_www
-              |> safe_parse
+    |> String.strip
+    |> String.downcase
+    |> remove_www
+    |> safe_parse
+
     case result do
       {:ok, parsed} ->
         {_scheme, port} = normalized_http(parsed.scheme, parsed.port)
-        query = case parsed.query do
-          nil -> ""
-          _ -> "?" <> parsed.query
-        end
+        query = clean_query(parsed.query, opts[:campaign_params])
         normalized_host = parsed.host |> String.strip
         normalized_path = (parsed.path || "") |> String.replace_trailing("/", "")
         normalized_parent = normalized_host <> port
@@ -136,6 +134,35 @@ defmodule UrlTincture do
                           query: "#{parsed.query}"}
       {:error, _} -> @error
     end
+  end
+
+  @spec clean_query(String.t, boolean()) :: String.t
+  defp clean_query(query, param_handling) do
+    case campaign_check(query, param_handling) do
+     nil -> ""
+     "" -> ""
+     result -> "?" <> result
+   end
+  end
+
+  @spec campaign_check(any(), atom()) :: String.t
+  def campaign_check(nil, _), do: ""
+  def campaign_check("", _),  do: ""
+  def campaign_check(query, :keep), do: query
+  def campaign_check(query, :remove) do
+    query
+    |> URI.query_decoder
+    |> Enum.reduce(%{}, fn {k, v}, acc ->
+      IO.puts("#{k}: #{v}")
+      if String.starts_with?(k, "utm_") do
+        IO.puts("skipping #{k}")
+        acc
+      else
+        IO.puts("keeping #{k}")
+        Map.put(acc, k, v)
+      end
+    end)
+    |> URI.encode_query
   end
 
   @doc """
