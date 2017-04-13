@@ -55,6 +55,7 @@ defmodule UrlTinctureTest do
   test "forces http protocol" do
     assert(UrlTincture.force_http("github.com") == "http://github.com")
     assert(UrlTincture.force_http("https://github.com") == "https://github.com")
+    assert(UrlTincture.force_http("//github.com") == "http://github.com")
   end
 
   test "canonicalizes with expected i/o (forcing http)" do

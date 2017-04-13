@@ -218,7 +218,11 @@ defmodule UrlTincture do
   def force_http(url) do
     cond do
       httpish?(url) -> url
-      true -> "http://" <> url
+      true ->
+        case url do
+          "//" <> _rest -> "http:" <> url
+          _ -> "http://" <> url
+        end
     end
   end
 
