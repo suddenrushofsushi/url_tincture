@@ -159,6 +159,11 @@ defmodule UrlTinctureTest do
     assert(UrlTincture.can_parse_safely?("https://google.com") == {:ok, "https://google.com"})
   end
 
+  test "canonicalize_url/2 errors with invalid scheme delimiter"do
+    result = UrlTincture.canonicalize_url("htsdfatps//andres2-perlu.tumblr.com")
+    assert result == {:error, "invalid url"}
+  end
+
   def http_check(urls, func) do
     for {expected, ordinal, url} <- urls do
       result = Tuple.to_list(func.(url)) |> Enum.at(0)

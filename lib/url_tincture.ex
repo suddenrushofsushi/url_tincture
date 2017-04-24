@@ -103,10 +103,13 @@ defmodule UrlTincture do
   def canonicalize_url(url, opts) do
     opts = Keyword.merge([force_http: true, campaign_params: :keep], opts)
 
-    parseable = case opts[:force_http] do
-      true -> force_http(url)
-      false -> url
-    end
+    parseable =
+      if opts[:force_http] && valid_scheme_delimiter?(url) do
+        force_http(url)
+      else
+        url
+      end
+
     result = parseable
     |> String.strip
     |> String.downcase
@@ -247,5 +250,14 @@ defmodule UrlTincture do
       true -> 3
     end
     host |> String.split(".") |> Enum.take(parts * -1) |> Enum.join(".")
+  end
+
+  @spec valid_scheme_delimiter?(String.t) :: boolean()
+  def valid_scheme_delimiter?(url) do
+    if String.contains?(url, "//") do
+      String.contains?(url, "://")
+    else
+      true
+    end
   end
 end
