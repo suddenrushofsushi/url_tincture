@@ -9,10 +9,10 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
   1. Add url_tincture to your list of dependencies in `mix.exs`:
 
         def deps do
-          [{:url_tincture, "~> 1.0.6"}]
+          [{:url_tincture, "~> 1.0"}]
         end
 
-  2. Ensure url_tincture is started before your application:
+  2. Ensure url_tincture is started before your application (Elixir < 1.4):
 
         def application do
           [applications: [:url_tincture]]

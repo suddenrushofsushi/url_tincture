@@ -164,11 +164,31 @@ defmodule UrlTinctureTest do
     assert result == {:error, "invalid url"}
   end
 
+  describe "top-level-domains" do
+    test "correctly identifies unary tlds" do
+      checks = ~w(tincture.com|com tincture.org|org www.tincture.com|com more.www.tincture.org|org
+                  org.biz.info|info place.org.biz|biz tincture.net|net)
+      checks |> Enum.each(fn check ->
+        [url, tld] = String.split(check, "|")
+        assert UrlTincture.canonicalize_url(url).tld == tld
+      end)
+    end
+    test "correctly identifies binary tlds" do
+      checks = ~w(blogspot.co.uk|co.uk amazo.com.br|com.br blog.website.br|br
+                  blog.tincture.uk|uk hello.kitty.co.jp|co.jp onthebarbie.com.au|com.au)
+      checks |> Enum.each(fn check ->
+        [url, tld] = String.split(check, "|")
+        assert UrlTincture.canonicalize_url(url).tld == tld
+      end)
+    end
+  end
+
   def http_check(urls, func) do
     for {expected, ordinal, url} <- urls do
       result = Tuple.to_list(func.(url)) |> Enum.at(0)
       assert("#{expected}|#{ordinal}" == "#{result}|#{ordinal}")
     end
   end
+
 
 end

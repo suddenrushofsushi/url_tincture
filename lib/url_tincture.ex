@@ -240,6 +240,7 @@ defmodule UrlTincture do
   end
   @spec extract_tld(list()) :: String.t
   def extract_tld(["co", value]), do: "co." <> value
+  def extract_tld(["com", value]), do: "com." <> value
   def extract_tld([_value, tld]), do: tld
 
   @spec extract_root(String.t) :: String.t
