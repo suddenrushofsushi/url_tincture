@@ -22,6 +22,7 @@ defmodule UrlTincture.Mixfile do
   defp deps do
    [
      {:poison, ">= 2.0.0"},
+     {:xxhash, github: "pierreis/erlang-xxhash", manager: :rebar},
      {:earmark, "~> 0.2", only: :dev},
      {:ex_doc, "~> 0.11", only: :dev}
   ]
