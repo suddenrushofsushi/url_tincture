@@ -167,7 +167,7 @@ defmodule UrlTinctureTest do
   describe "top-level-domains" do
     test "correctly identifies unary tlds" do
       checks = ~w(tincture.com|com tincture.org|org www.tincture.com|com more.www.tincture.org|org
-                  org.biz.info|info place.org.biz|biz tincture.net|net)
+                  org.biz.info|info place.website.biz|biz tincture.net|net)
       checks |> Enum.each(fn check ->
         [url, tld] = String.split(check, "|")
         assert UrlTincture.canonicalize_url(url).tld == tld
@@ -175,7 +175,8 @@ defmodule UrlTinctureTest do
     end
     test "correctly identifies binary tlds" do
       checks = ~w(blogspot.co.uk|co.uk amazo.com.br|com.br blog.website.br|br
-                  blog.tincture.uk|uk hello.kitty.co.jp|co.jp onthebarbie.com.au|com.au)
+                  blog.tincture.uk|uk hello.kitty.co.jp|co.jp onthebarbie.com.au|com.au
+                  myblog.org.uk|org.uk)
       checks |> Enum.each(fn check ->
         [url, tld] = String.split(check, "|")
         assert UrlTincture.canonicalize_url(url).tld == tld
@@ -189,6 +190,4 @@ defmodule UrlTinctureTest do
       assert("#{expected}|#{ordinal}" == "#{result}|#{ordinal}")
     end
   end
-
-
 end
