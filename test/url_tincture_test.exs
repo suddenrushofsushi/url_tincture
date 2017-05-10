@@ -184,6 +184,17 @@ defmodule UrlTinctureTest do
     end
   end
 
+  describe "valid_scheme_delimiter?" do
+    test "allows // at the front of a URL" do
+      assert UrlTincture.valid_scheme_delimiter?("//github.com")
+    end
+
+    test "disallows // in the url unless there's ://" do
+      assert UrlTincture.valid_scheme_delimiter?("http://github.com//site")
+      refute UrlTincture.valid_scheme_delimiter?("http//github.com")
+    end
+  end
+
   def http_check(urls, func) do
     for {expected, ordinal, url} <- urls do
       result = Tuple.to_list(func.(url)) |> Enum.at(0)

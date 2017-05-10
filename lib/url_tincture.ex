@@ -255,6 +255,7 @@ defmodule UrlTincture do
   end
 
   @spec valid_scheme_delimiter?(String.t) :: boolean()
+  def valid_scheme_delimiter?("//" <> _url), do: true
   def valid_scheme_delimiter?(url) do
     if String.contains?(url, "//") do
       String.contains?(url, "://")
